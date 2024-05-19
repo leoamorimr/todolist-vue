@@ -1,5 +1,4 @@
 <!-- eslint-disable vue/no-side-effects-in-computed-properties -->
-
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 
@@ -11,7 +10,7 @@ const input_category = ref(null);
 
 const todos_asc = computed(() =>
   todos.value.sort((a, b) => {
-    return b.createdAt - a.createdAt;
+    return a.createdAt - b.createdAt;
   })
 );
 
@@ -24,50 +23,53 @@ watch(
   (newVal) => {
     localStorage.setItem("todos", JSON.stringify(newVal));
   },
-  { deep: true }
+  {
+    deep: true,
+  }
 );
 
-onMounted(() => {
-  name.value = localStorage.getItem("name") || "";
-  todos.value = JSON.parse(localStorage.getItem("todos")) || [];
-});
-
 const addTodo = () => {
-  if (input_content.value === "" || input_category.value === null) {
+  if (input_content.value.trim() === "" || input_category.value === null) {
     return;
   }
 
   todos.value.push({
     content: input_content.value,
     category: input_category.value,
-    createdAt: new Date().getTime(),
     done: false,
+    editable: false,
+    createdAt: new Date().getTime(),
   });
-
-  input_content.value = "";
-  input_category.value = null;
 };
 
 const removeTodo = (todo) => {
   todos.value = todos.value.filter((t) => t !== todo);
 };
+
+onMounted(() => {
+  name.value = localStorage.getItem("name") || "";
+  todos.value = JSON.parse(localStorage.getItem("todos")) || [];
+});
 </script>
 
 <template>
   <main class="app">
     <section class="greeting">
       <h2 class="title">
-        What's up, <input type="text" placeholder="Name here" v-model="name" />
+        What's up,
+        <input type="text" id="name" placeholder="Name here" v-model="name" />
       </h2>
     </section>
 
     <section class="create-todo">
-      <h3>Create a Todo:</h3>
+      <h3>CREATE A TODO</h3>
 
       <form id="new-todo-form" @submit.prevent="addTodo">
         <h4>What's on your todo list?</h4>
         <input
           type="text"
+          name="content"
+          id="content"
           placeholder="e.g. make a video"
           v-model="input_content"
         />
@@ -78,7 +80,7 @@ const removeTodo = (todo) => {
             <input
               type="radio"
               name="category"
-              id="business"
+              id="category1"
               value="business"
               v-model="input_category"
             />
@@ -90,7 +92,7 @@ const removeTodo = (todo) => {
             <input
               type="radio"
               name="category"
-              id="personal"
+              id="category2"
               value="personal"
               v-model="input_category"
             />
@@ -99,7 +101,7 @@ const removeTodo = (todo) => {
           </label>
         </div>
 
-        <input type="submit" value="Add Todo" />
+        <input type="submit" value="Add todo" />
       </form>
     </section>
 
@@ -121,7 +123,7 @@ const removeTodo = (todo) => {
           </label>
 
           <div class="todo-content">
-            <input type="text" v-model="todo.content" />
+            {{ todo.content }}
           </div>
 
           <div class="actions">

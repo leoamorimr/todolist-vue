@@ -178,6 +178,7 @@ input:checked ~ .bubble::after {
   display: flex;
   align-items: center;
   background-color: #fff;
+  width: 100%;
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: var(--shadow);
