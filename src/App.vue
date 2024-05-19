@@ -123,7 +123,7 @@ onMounted(() => {
           </label>
 
           <div class="todo-content">
-            {{ todo.content }}
+            <input type="text" v-model="todo.content" />
           </div>
 
           <div class="actions">
